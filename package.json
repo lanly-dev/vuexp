@@ -6,22 +6,19 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lint-fix": "vue-cli-service lint --fix",
     "ebuild": "vue-cli-service electron:build",
     "eserve": "vue-cli-service electron:serve",
+    "lint-fix": "vue-cli-service lint --fix",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
-  },
   "dependencies": {
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
-    "vue-property-decorator": "^9.0.0"
+    "vue-property-decorator": "^9.0.0",
+    "vuetify": "^2.3.1"
   },
   "devDependencies": {
     "@types/node": "^12.12.47",
@@ -41,11 +38,19 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.2.2",
+    "sass": "^1.26.8",
+    "sass-loader": "^8.0.2",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "typescript": "~3.9.5",
     "vue-cli-plugin-electron-builder": "^1.4.6",
     "vue-cli-plugin-pug": "^1.0.7",
-    "vue-template-compiler": "^2.6.11"
+    "vue-cli-plugin-vuetify": "~2.0.5",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.5.0"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
   }
 }
