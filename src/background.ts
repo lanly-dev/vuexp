@@ -1,20 +1,17 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
-import {
-  createProtocol,
-  installVueDevtools
-} from 'vue-cli-plugin-electron-builder/lib'
+import { app, protocol, BrowserWindow, ipcMain, screen } from 'electron'
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win: BrowserWindow | null
+let win: BrowserWindow | undefined
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 800,
@@ -34,24 +31,40 @@ function createWindow () {
     win.loadURL('app://./index.html')
   }
 
-  win.on('closed', () => {
-    win = null
+  ipcMain.on('ondragstart', (event, filePath) => {
+    event.sender.startDrag({
+      file: filePath,
+      icon: 'app://../src/file.png'
+    })
   })
+
+  ipcMain.on('ondragstart2', (event, filePath) => {
+    console.log('dropdrop')
+  })
+
+  ipcMain.on('ondragend', (event, filePath) => {
+    const pos = screen.getCursorScreenPoint()
+    const child = new BrowserWindow({
+      x: pos.x,
+      y: pos.y,
+      parent: win
+    })
+  })
+
+  win.on('closed', () => { win = undefined })
 }
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin')
-    app.quit()
+  if (process.platform !== 'darwin') app.quit()
 })
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (win === null)
-    createWindow()
+  if (win === null) createWindow()
 })
 
 // This method will be called when Electron has finished
@@ -70,7 +83,6 @@ app.on('ready', async () => {
     // } catch (e) {
     //   console.error('Vue Devtools failed to install:', e.toString())
     // }
-
   }
   createWindow()
 })
@@ -79,8 +91,7 @@ app.on('ready', async () => {
 if (isDevelopment) {
   if (process.platform === 'win32') {
     process.on('message', data => {
-      if (data === 'graceful-exit')
-        app.quit()
+      if (data === 'graceful-exit') app.quit()
     })
   } else {
     process.on('SIGTERM', () => {
